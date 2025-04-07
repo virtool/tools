@@ -1,9 +1,12 @@
 #!/bin/bash
 
-# Get the version from the command line argument
 version=$1
 
 # Download, extract, configure, and install the version
-RUN wget https://github.com/BenLangmead/bowtie2/releases/download/v${version}/bowtie2-${version}-linux-x86_64.zip
-RUN unzip bowtie2-${version}-linux-x86_64.zip
-RUN mv bowtie2-${version}-linux-x86_64 /build/bowtie2-${version}
+wget https://github.com/BenLangmead/bowtie2/archive/refs/tags/v$version.tar.gz
+ls
+tar -xvf v${version}.tar.gz
+cd bowtie2-${version}
+make
+mkdir /build/bowtie2
+cp bowtie2* /build/bowtie2/
