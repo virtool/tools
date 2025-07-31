@@ -1,10 +1,11 @@
-#! /bin/bash
+#!/bin/bash
 
+# Get the version from the command line argument
+version=$1
 
-
-wget https://zlib.net/pigz/pigz-2.8.tar.gz
-tar -xzvf pigz-2.8.tar.gz
-cd pigz-2.8
+wget https://zlib.net/pigz/pigz-${version}.tar.gz
+tar -xzvf pigz-${version}.tar.gz
+cd pigz-${version}
 make
-mkdir -p /pigz/2.8
-mv pigz /pigz/2.8/pigz
+mkdir -p /pigz/${version}
+mv pigz /pigz/${version}/pigz

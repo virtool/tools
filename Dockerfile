@@ -33,7 +33,7 @@ FROM debian:bookworm AS pigz
 WORKDIR /build
 RUN apt-get update && apt-get install -y gcc make wget zlib1g-dev
 COPY install_pigz.sh .
-RUN bash install_pigz.sh 2.7
+RUN bash install_pigz.sh 2.8
 
 # Skewer
 FROM debian:bullseye AS skewer
