@@ -42,6 +42,13 @@ RUN apt-get update && apt-get install -y build-essential wget
 COPY install_skewer.sh .
 RUN bash install_skewer.sh 0.2.2
 
+# Samtools
+FROM debian:bookworm AS samtools
+WORKDIR /build
+RUN apt-get update && apt-get install -y build-essential wget libbz2-dev zlib1g-dev libncurses5-dev libncursesw5-dev liblzma-dev libcurl4-openssl-dev
+COPY install_samtools.sh .
+RUN bash install_samtools.sh 1.22.1
+
 # Combine tools into a single image.
 FROM debian:bookworm AS combine
 WORKDIR /tools
@@ -50,12 +57,13 @@ COPY --from=fastp /fastp/ ./fastp
 COPY --from=fastqc /fastqc ./fastqc
 COPY --from=hmmer /hmmer ./hmmer
 COPY --from=pigz /pigz/ ./pigz
+COPY --from=samtools /samtools/ ./samtools
 COPY --from=skewer /skewer ./skewer
 
 # Testing
 FROM debian:bookworm AS test
 WORKDIR /tools
-RUN apt-get update && apt-get install -y default-jre perl
+RUN apt-get update && apt-get install -y default-jre perl libcurl4
 COPY --from=combine /tools /tools
 COPY test.sh .
 RUN bash test.sh
@@ -63,4 +71,5 @@ RUN bash test.sh
 
 FROM debian:bookworm
 WORKDIR /tools
+RUN apt-get update && apt-get install -y libcurl4 && apt-get clean && rm -rf /var/lib/apt/lists/*
 COPY --from=test /tools /tools

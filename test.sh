@@ -98,6 +98,26 @@ for version in "${pigz_versions[@]}"; do
     fi
 done
 
+# Test Samtools
+samtools_versions=("1.22.1")
+
+for version in "${samtools_versions[@]}"; do
+    samtools_path="/tools/samtools/${version}/bin/samtools"
+
+    if [ -x "$samtools_path" ]; then
+        detected_version=$("$samtools_path" --version | head -n1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+$')
+        if [ "$detected_version" = "$version" ]; then
+            echo "Samtools version ${version} is installed and correct."
+        else
+            echo "Samtools version ${version} is installed but version mismatch (found $detected_version)."
+            exit 1
+        fi
+    else
+        echo "Samtools version ${version} is not installed or not executable."
+        exit 1
+    fi
+done
+
 # Test Skewer
 skewer_versions=("0.2.2")
 
