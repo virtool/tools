@@ -138,3 +138,23 @@ for version in "${skewer_versions[@]}"; do
         exit 1
     fi
 done
+
+# Test cd-hit
+cd_hit_versions=("4.8.1")
+
+for version in "${cd_hit_versions[@]}"; do
+    cd_hit_path="/tools/cd-hit/${version}/cd-hit"
+
+    if [ -x "$cd_hit_path" ]; then
+        detected_version=$("$cd_hit_path" | head -n 1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+        if [ "$detected_version" = "$version" ]; then
+            echo "cd-hit version ${version} is installed and correct."
+        else
+            echo "cd-hit version ${version} is installed but version mismatch (found $detected_version)."
+            exit 1
+        fi
+    else
+        echo "cd-hit version ${version} is not installed or not executable."
+        exit 1
+    fi
+done
