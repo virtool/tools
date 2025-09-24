@@ -54,8 +54,6 @@ WORKDIR /build
 RUN apt-get update && apt-get install -y wget build-essential libz-dev && rm -rf /var/lib/apt/lists/*
 COPY install_cdhit.sh .
 RUN bash install_cdhit.sh 4.8.1 v4.8.1-2019-0228
-RUN ls
-RUN pwd
 
 # Combine tools into a single image.
 FROM debian:bookworm AS combine
@@ -72,7 +70,7 @@ COPY --from=cdhit /cd-hit ./cd-hit
 # Testing
 FROM debian:bookworm AS test
 WORKDIR /tools
-RUN apt-get update && apt-get install -y default-jre perl libcurl4 libgomp1 && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y default-jre perl libcurl4 && rm -rf /var/lib/apt/lists/*
 COPY --from=combine /tools /tools
 COPY test.sh .
 RUN bash test.sh
@@ -80,5 +78,5 @@ RUN bash test.sh
 
 FROM debian:bookworm
 WORKDIR /tools
-RUN apt-get update && apt-get install -y libcurl4 libgomp1 && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y libcurl4 && apt-get clean && rm -rf /var/lib/apt/lists/*
 COPY --from=test /tools /tools
